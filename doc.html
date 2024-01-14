@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <dialog class="start-screen" open>
+      <h2 class="logo">tictactoe</h2>
+
+      <div class="start-screen__options">
+        <fieldset class="start-screen__options__selection">
+          <legend>select player 2</legend>
+
+          <label for="player-two-player" class="select">
+            player
+            <input
+              type="radio"
+              name="player-two"
+              value="player"
+              id="player-two-player"
+            />
+          </label>
+          <label for="player-two-computer" class="select">
+            computer
+            <input
+              type="radio"
+              name="player-two"
+              value="player"
+              id="player-two-computer"
+            />
+          </label>
+        </fieldset>
+        <fieldset class="start-screen__options__selection">
+          <legend>select theme</legend>
+
+          <label for="theme-dark" class="select">
+            player
+            <input type="radio" name="theme" value="dark" id="theme-dark" />
+          </label>
+          <label for="theme-light" class="select">
+            computer
+            <input type="radio" name="theme" value="light" id="theme-light" />
+          </label>
+        </fieldset>
+      </div>
+
+      <button class="button start-screen__button">start</button>
+    </dialog>
+  </body>
+</html>
