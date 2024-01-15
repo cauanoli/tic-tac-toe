@@ -28,9 +28,15 @@ body {
   margin-bottom: 1rem;
 }
 
-.start-screen {
+dialog {
+  outline: none;
   top: 0;
   bottom: 0;
+  border: none;
+  padding: 0;
+}
+
+.start-screen {
   padding: 2rem;
   font-size: 1rem;
 
@@ -126,4 +132,82 @@ body {
   background-color: var(--text-color);
   color: var(--bg-color);
   cursor: pointer;
+}
+
+.back-button {
+  background-color: transparent;
+  border: none;
+  padding: 8px;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+.back-button:hover {
+  background-color: var(--text-color);
+  cursor: pointer;
+}
+
+.back-button:hover .back-button__icon {
+  color: var(--bg-color);
+}
+
+.back-button__icon {
+  color: var(--text-color);
+}
+
+.wrapper-center-screen {
+  display: grid;
+  place-content: center;
+  align-items: center;
+  grid-template-rows: 1fr;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.game-board {
+  display: grid;
+  background-color: var(--text-color);
+  grid-template-rows: repeat(3, minmax(80px, 1fr));
+  grid-template-columns: repeat(3, minmax(80px, 1fr));
+  gap: var(--game-board-line-size);
+}
+
+.game-board__cell {
+  background-color: var(--bg-color);
+  display: grid;
+  place-items: center;
+}
+
+.game-board__cell:not(.filled):hover {
+  background-color: var(--text-color);
+  cursor: pointer;
+  color: var(--bg-color);
+}
+
+.scores-display {
+  display: flex;
+  padding: 1.5rem;
+  border: 2px solid var(--text-color);
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+}
+
+.scores-display__player {
+  font-size: 2rem;
+}
+
+.scores-display__player__score {
+  font-weight: 700;
+}
+
+@media (min-width: 750px) {
+  .wrapper-center-screen {
+    padding-bottom: 2rem;
+  }
+
+  .scores-display {
+    position: initial;
+  }
 }

@@ -4,88 +4,111 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>tic-tac-toe</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
     <link rel="stylesheet" href="./style.css" />
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+    </style>
   </head>
-  <body class="dark">
+  <body class="light">
     <main>
-      <div class="game-board">
-        <div class="game-board__row">
-          <div class="gameboard__column"></div>
-          <div class="gameboard__column"></div>
-          <div class="gameboard__column"></div>
-        </div>
-        <div class="game-board__row">
-          <div class="gameboard__column"></div>
-          <div class="gameboard__column"></div>
-          <div class="gameboard__column"></div>
-        </div>
-        <div class="game-board__row">
-          <div class="gameboard__column"></div>
-          <div class="gameboard__column"></div>
-          <div class="gameboard__column"></div>
-        </div>
-      </div>
+      <button class="back-button">
+        <span class="material-symbols-outlined back-button__icon">
+          arrow_back
+        </span>
+      </button>
 
-      <div class="scores-display">
-        <div class="scores-display__player-one"></div>
-        <div class="scores-display__player-two"></div>
+      <div class="wrapper-center-screen">
+        <div class="game-board">
+          <div class="game-board__cell"></div>
+          <div class="game-board__cell"></div>
+          <div class="game-board__cell"></div>
+          <div class="game-board__cell"></div>
+          <div class="game-board__cell"></div>
+          <div class="game-board__cell"></div>
+          <div class="game-board__cell"></div>
+          <div class="game-board__cell"></div>
+          <div class="game-board__cell"></div>
+        </div>
+
+        <div class="scores-display">
+          <div
+            class="scores-display__player scores-display__player--player-one"
+          >
+            <h2 class="scores-display__player__name"></h2>
+            <span class="scores-display__player__score"> </span>
+          </div>
+          <div
+            class="scores-display__player scores-display__player--player-two"
+          >
+            <h2 class="scores-display__player__name"></h2>
+            <span class="scores-display__player__score"> </span>
+          </div>
+        </div>
       </div>
     </main>
-    <dialog class="start-screen" open>
-      <h2 class="logo">tictactoe</h2>
+    <dialog>
+      <div class="start-screen">
+        <h2 class="logo">tictactoe</h2>
 
-      <div class="start-screen__options">
-        <fieldset class="start-screen__options__selection">
-          <legend>select player 2</legend>
+        <div class="start-screen__options">
+          <fieldset class="start-screen__options__selection">
+            <legend>select player 2</legend>
 
-          <label for="player-two-player" class="select">
-            player
-            <input
-              type="radio"
-              name="player-two"
-              value="player"
-              id="player-two-player"
-              class="select__input"
-            />
-          </label>
-          <label for="player-two-computer" class="select">
-            computer
-            <input
-              type="radio"
-              name="player-two"
-              value="player"
-              id="player-two-computer"
-              class="select__input"
-            />
-          </label>
-        </fieldset>
-        <fieldset class="start-screen__options__selection">
-          <legend>select theme</legend>
+            <label for="player-two-player" class="select">
+              player
+              <input
+                type="radio"
+                name="player-two"
+                value="player"
+                id="player-two-player"
+                class="select__input"
+              />
+            </label>
+            <label for="player-two-computer" class="select">
+              computer
+              <input
+                type="radio"
+                name="player-two"
+                value="player"
+                id="player-two-computer"
+                class="select__input"
+              />
+            </label>
+          </fieldset>
+          <fieldset class="start-screen__options__selection">
+            <legend>select theme</legend>
 
-          <label for="theme-dark" class="select">
-            player
-            <input
-              type="radio"
-              name="theme"
-              value="dark"
-              id="theme-dark"
-              class="select__input"
-            />
-          </label>
-          <label for="theme-light" class="select">
-            computer
-            <input
-              type="radio"
-              name="theme"
-              value="light"
-              id="theme-light"
-              class="select__input"
-            />
-          </label>
-        </fieldset>
+            <label for="theme-dark" class="select">
+              player
+              <input
+                type="radio"
+                name="theme"
+                value="dark"
+                id="theme-dark"
+                class="select__input"
+              />
+            </label>
+            <label for="theme-light" class="select">
+              computer
+              <input
+                type="radio"
+                name="theme"
+                value="light"
+                id="theme-light"
+                class="select__input"
+              />
+            </label>
+          </fieldset>
+        </div>
+
+        <button class="button start-screen__button">start</button>
       </div>
-
-      <button class="button start-screen__button">start</button>
     </dialog>
   </body>
 </html>

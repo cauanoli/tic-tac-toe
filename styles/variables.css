@@ -1,3 +1,7 @@
+:root {
+  --game-board-line-size: 4px;
+}
+
 body.dark {
   --text-color: #fff;
   --bg-color: #000;
