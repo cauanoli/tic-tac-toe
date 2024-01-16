@@ -61,7 +61,13 @@ const gameBoard = (function () {
   }
 
   function makePlay(playerName, position) {
-    board[position].fill(playerName);
+    if (position === "random") {
+      const validCells = getEmptyCells();
+      const randomPlace = Math.floor(Math.random() * (validCells.length - 1));
+      validCells[randomPlace].fill(playerName);
+    } else {
+      board[position].fill(playerName);
+    }
   }
 
   function getEmptyCells() {
@@ -93,15 +99,47 @@ const computer = (function () {
   const computerPlayer = createPlayer("computer");
 
   function randomPlay() {
-    const validCells = gameBoard.getEmptyCells();
-    const randomPlace = Math.floor(Math.random() * (validCells.length - 1));
-    validCells[randomPlace].fill(computerPlayer.getName());
+    gameBoard.makePlay(computerPlayer.getName(), "random");
   }
 
   return {
     ...computerPlayer,
     randomPlay,
   };
+})();
+
+const scoresBoard = (function () {
+  const playerOneDisplay = document.querySelector(
+    ".scores-display__player--player-one"
+  );
+  const playerOneScore = playerOneDisplay.querySelector(
+    ".scores-display__player__score"
+  );
+  const playerOneName = playerOneDisplay.querySelector(
+    ".scores-display__player__name"
+  );
+
+  const secondPlayerDisplay = document.querySelector(
+    ".scores-display__player--player-two"
+  );
+  const secondPlayerScore = secondPlayerDisplay.querySelector(
+    ".scores-display__player__score"
+  );
+  const secondPlayerName = secondPlayerDisplay.querySelector(
+    ".scores-display__player__name"
+  );
+
+  function updatePlayerNames([firstName, secondName]) {
+    playerOneName.innerText = firstName;
+    secondPlayerName.innerText = secondName;
+  }
+
+  function updateScores([scoreOne, scoreTwo]) {
+    playerOneScore.innerText = scoreOne;
+    secondPlayerScore.innerText = scoreTwo;
+  }
+  events.on("gameStart", updatePlayerNames);
+  events.on("scoreUpdate", updateScores);
 })();
 
 const game = (function () {
@@ -117,8 +155,6 @@ const game = (function () {
 
   function verifyForWinner() {
     const board = gameBoard.getBoard();
-    console.log(board);
-    console.log(winner);
 
     function verifyRows() {
       if (board[0] != null && board[0] == board[1] && board[1] == board[2]) {
@@ -182,6 +218,8 @@ const game = (function () {
     if (winner === secondPlayer.getName()) {
       secondPlayer.addScore();
     }
+
+    events.emit("scoreUpdate", [player.getScore(), secondPlayer.getScore()]);
   }
 
   function makePlay(position) {
@@ -204,13 +242,15 @@ const game = (function () {
     passTurn();
   }
 
-  function quitGame() {
+  function reset() {
+    winner = null;
     gameBoard.clear();
   }
 
+  events.emit("scoreUpdate", [player.getScore(), secondPlayer.getScore()]);
+  events.emit("gameStart", [player.getName(), secondPlayer.getName()]);
+
   return {
-    passTurn,
     makePlay,
-    quitGame,
   };
 })();
