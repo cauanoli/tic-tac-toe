@@ -50,8 +50,9 @@ dialog {
   gap: 2rem;
 }
 
-.start-screen::backdrop {
-  background-color: var(--bg-color);
+dialog::backdrop,
+dialog::-ms-backdrop {
+  background: var(--bg-color);
 }
 
 .start-screen__button {
@@ -175,9 +176,14 @@ dialog {
 
 .game-board__cell {
   background-color: var(--bg-color);
+  color: var(--text-color);
   display: grid;
   place-items: center;
   aspect-ratio: 1/1;
+}
+
+.game-board__cell span {
+  font-size: 4rem;
 }
 
 .game-board__cell:not(.filled):hover {
@@ -196,6 +202,7 @@ dialog {
   align-items: center;
   justify-content: center;
   gap: 2rem;
+  color: var(--text-color);
 }
 
 .scores-display__player {

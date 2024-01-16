@@ -17,7 +17,7 @@
     <script src="./pubsub.js" defer></script>
     <script src="./main.js" defer></script>
   </head>
-  <body class="light">
+  <body class="dark">
     <main>
       <button class="back-button">
         <span class="material-symbols-outlined back-button__icon">
@@ -44,7 +44,7 @@
         </div>
       </div>
     </main>
-    <dialog>
+    <dialog class="start-screen-dialog">
       <div class="start-screen">
         <h2 class="logo">tictactoe</h2>
 
@@ -60,6 +60,7 @@
                 value="player"
                 id="player-two-player"
                 class="select__input"
+                checked
               />
             </label>
             <label for="player-two-computer" class="select">
@@ -67,7 +68,7 @@
               <input
                 type="radio"
                 name="player-two"
-                value="player"
+                value="computer"
                 id="player-two-computer"
                 class="select__input"
               />
@@ -77,17 +78,18 @@
             <legend>select theme</legend>
 
             <label for="theme-dark" class="select">
-              player
+              dark
               <input
                 type="radio"
                 name="theme"
                 value="dark"
                 id="theme-dark"
                 class="select__input"
+                checked
               />
             </label>
             <label for="theme-light" class="select">
-              computer
+              light
               <input
                 type="radio"
                 name="theme"

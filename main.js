@@ -80,6 +80,7 @@ const gameBoard = (function () {
     } else {
       if (board[position].isEmpty()) {
         board[position].fill(playerName);
+        return true;
       } else {
         return false;
       }
@@ -190,14 +191,16 @@ const gameBoardDisplay = (function () {
     gameBoardContainer.childNodes.forEach((child, i) => {
       const playerName = board[i];
       if (playerName === firstPlayerName && child.childNodes.length === 0) {
-        const symbol = document.createElement("img");
-        symbol.src = "./assets/icons/circle.svg";
+        const symbol = document.createElement("span");
+        symbol.classList = "material-symbols-outlined";
+        symbol.innerText = "circle";
         child.appendChild(symbol);
       }
 
       if (playerName === secondPlayerName && child.childNodes.length === 0) {
-        const symbol = document.createElement("img");
-        symbol.src = "./assets/icons/x.svg";
+        const symbol = document.createElement("span");
+        symbol.classList = "material-symbols-outlined";
+        symbol.innerText = "close";
         child.appendChild(symbol);
       }
     });
@@ -223,16 +226,24 @@ const gameBoardDisplay = (function () {
   }
 
   events.on("gameStart", render);
-  events.on("playerPlay", updateBoard);
   events.on("gameFinish", clearBoard);
+  events.on("playerPlay", updateBoard);
 })();
 
 const game = (function () {
   const player = createPlayer("player");
-  const secondPlayer = computer;
+  let secondPlayer = null;
   let currentPlayer = player;
   let winner = null;
   let ties = 0;
+
+  function initiateSecondPlayer(value) {
+    if (value === "computer") {
+      secondPlayer = computer;
+    } else {
+      secondPlayer = createPlayer("secondPlayer");
+    }
+  }
 
   function passTurn() {
     currentPlayer =
@@ -305,7 +316,13 @@ const game = (function () {
     if (currentPlayer.getName() === computer.getName()) {
       computer.randomPlay();
     } else {
-      gameBoard.makePlay(currentPlayer.getName(), position);
+      const isSuccessFull = gameBoard.makePlay(
+        currentPlayer.getName(),
+        position
+      );
+      if (!isSuccessFull) {
+        return;
+      }
     }
     verifyForWinner();
     gameBoard.printBoard();
@@ -330,27 +347,65 @@ const game = (function () {
     gameBoard.clear();
   }
 
-  events.emit("scoreUpdate", [player.getScore(), secondPlayer.getScore()]);
-  events.emit("gameStart", {
-    scores: [player.getName(), secondPlayer.getName()],
-    currentPlayer: currentPlayer.getName(),
-    board: gameBoard.getBoard(),
-  });
+  function start(secondPlayerValue) {
+    initiateSecondPlayer(secondPlayerValue);
 
+    events.emit("scoreUpdate", [player.getScore(), secondPlayer.getScore()]);
+    events.emit("gameStart", {
+      scores: [player.getName(), secondPlayer.getName()],
+      currentPlayer: currentPlayer.getName(),
+      board: gameBoard.getBoard(),
+    });
+  }
   events.on("playerClick", (position) => {
     if (currentPlayer.getName() !== computer.getName()) {
       makePlay(position);
     } else {
       makePlay();
-      events.emit("playerPlay", {
-        board: gameBoard.getBoardValues(),
-        firstPlayerName: player.getName(),
-        secondPlayerName: computer.getName(),
-      });
     }
+
+    events.emit("playerPlay", {
+      board: gameBoard.getBoardValues(),
+      firstPlayerName: player.getName(),
+      secondPlayerName: secondPlayer.getName(),
+    });
   });
 
   return {
     makePlay,
+    start,
   };
+})();
+
+(function () {
+  const startGameModal = document.querySelector("dialog.start-screen-dialog");
+  const selectPlayerInputs = startGameModal.querySelectorAll(
+    "input[name='player-two'"
+  );
+
+  const selectThemeInputs =
+    startGameModal.querySelectorAll("input[name='theme'");
+  startGameModal.showModal();
+
+  const startGameButton = startGameModal.querySelector(".start-screen__button");
+
+  function setTheme(theme) {
+    document.body.classList = theme;
+  }
+
+  function startGame() {
+    const secondPlayer = [...selectPlayerInputs].filter(
+      (input) => input.checked
+    )[0].value;
+    game.start(secondPlayer);
+    startGameModal.close();
+  }
+
+  startGameButton.addEventListener("click", startGame);
+
+  selectThemeInputs.forEach((input) => {
+    input.addEventListener("click", (event) => {
+      setTheme(event.target.value);
+    });
+  });
 })();
