@@ -57,16 +57,32 @@ const gameBoard = (function () {
   }
 
   function getBoard() {
+    return [...board];
+  }
+
+  function getBoardValues() {
     return board.map((cell) => cell.getValue());
   }
 
+  /*
+    Makes a play with cell is empty returning true,
+    if not returns false
+
+    @param {string} playerName
+    @param {number} position
+  */
   function makePlay(playerName, position) {
     if (position === "random") {
       const validCells = getEmptyCells();
       const randomPlace = Math.floor(Math.random() * (validCells.length - 1));
       validCells[randomPlace].fill(playerName);
+      return true;
     } else {
-      board[position].fill(playerName);
+      if (board[position].isEmpty()) {
+        board[position].fill(playerName);
+      } else {
+        return false;
+      }
     }
   }
 
@@ -84,14 +100,20 @@ const gameBoard = (function () {
     console.log(`${String(board.map((cell) => cell.getValue() ?? "empty"))}`);
   }
 
+  function isFull() {
+    return getBoardValues().every((value) => value !== null);
+  }
+
   startBoard();
 
   return {
-    getBoard,
+    getBoardValues,
     makePlay,
     getEmptyCells,
+    getBoard,
     printBoard,
     clear,
+    isFull,
   };
 })();
 
@@ -129,7 +151,7 @@ const scoresBoard = (function () {
     ".scores-display__player__name"
   );
 
-  function updatePlayerNames([firstName, secondName]) {
+  function updatePlayerNames({ scores: [firstName, secondName] }) {
     playerOneName.innerText = firstName;
     secondPlayerName.innerText = secondName;
   }
@@ -142,11 +164,75 @@ const scoresBoard = (function () {
   events.on("scoreUpdate", updateScores);
 })();
 
+function createCellDisplay(cell) {
+  const cellDiv = document.createElement("div");
+  cellDiv.classList = "game-board__cell";
+
+  function addEvent(eventName, fn) {
+    cellDiv.addEventListener(eventName, fn);
+  }
+
+  function removeEvent(eventName, fn) {
+    cellDiv.removeEventListener(eventName, fn);
+  }
+
+  return {
+    cellDiv,
+    addEvent,
+    removeEvent,
+  };
+}
+
+const gameBoardDisplay = (function () {
+  const gameBoardContainer = document.querySelector(".game-board");
+
+  function updateBoard({ board, firstPlayerName, secondPlayerName }) {
+    gameBoardContainer.childNodes.forEach((child, i) => {
+      const playerName = board[i];
+      if (playerName === firstPlayerName && child.childNodes.length === 0) {
+        const symbol = document.createElement("img");
+        symbol.src = "./assets/icons/circle.svg";
+        child.appendChild(symbol);
+      }
+
+      if (playerName === secondPlayerName && child.childNodes.length === 0) {
+        const symbol = document.createElement("img");
+        symbol.src = "./assets/icons/x.svg";
+        child.appendChild(symbol);
+      }
+    });
+  }
+
+  function onPlayerClick(i) {
+    events.emit("playerClick", i);
+  }
+
+  function render({ board, currentPlayerName }) {
+    board.forEach((cell, i) => {
+      const cellDisplay = createCellDisplay(cell, currentPlayerName);
+      cellDisplay.addEvent("click", () => onPlayerClick(i));
+      gameBoardContainer.appendChild(cellDisplay.cellDiv);
+    });
+  }
+
+  function clearBoard() {
+    gameBoardContainer.childNodes.forEach((child) => {
+      child.removeEventListener("click", onPlayerClick);
+      child.innerText = "";
+    });
+  }
+
+  events.on("gameStart", render);
+  events.on("playerPlay", updateBoard);
+  events.on("gameFinish", clearBoard);
+})();
+
 const game = (function () {
-  const player = createPlayer("cauan");
+  const player = createPlayer("player");
   const secondPlayer = computer;
   let currentPlayer = player;
   let winner = null;
+  let ties = 0;
 
   function passTurn() {
     currentPlayer =
@@ -154,7 +240,7 @@ const game = (function () {
   }
 
   function verifyForWinner() {
-    const board = gameBoard.getBoard();
+    const board = gameBoard.getBoardValues();
 
     function verifyRows() {
       if (board[0] != null && board[0] == board[1] && board[1] == board[2]) {
@@ -203,13 +289,6 @@ const game = (function () {
     verifyDiagonals();
   }
 
-  function announceWinner() {
-    console.log(console.log("winner is " + winner));
-    console.log(
-      `Player1: ${player.getScore()}\nPlayer2: ${secondPlayer.getScore()}`
-    );
-  }
-
   function updateScores() {
     if (winner === player.getName()) {
       player.addScore();
@@ -228,15 +307,19 @@ const game = (function () {
     } else {
       gameBoard.makePlay(currentPlayer.getName(), position);
     }
-
-    gameBoard.printBoard();
     verifyForWinner();
+    gameBoard.printBoard();
 
     if (winner) {
       updateScores();
-      announceWinner();
-      winner = null;
-      gameBoard.clear();
+      reset();
+      events.emit("gameFinish");
+    }
+
+    if (!winner && gameBoard.isFull()) {
+      ties++;
+      reset();
+      events.emit("gameFinish");
     }
 
     passTurn();
@@ -248,7 +331,24 @@ const game = (function () {
   }
 
   events.emit("scoreUpdate", [player.getScore(), secondPlayer.getScore()]);
-  events.emit("gameStart", [player.getName(), secondPlayer.getName()]);
+  events.emit("gameStart", {
+    scores: [player.getName(), secondPlayer.getName()],
+    currentPlayer: currentPlayer.getName(),
+    board: gameBoard.getBoard(),
+  });
+
+  events.on("playerClick", (position) => {
+    if (currentPlayer.getName() !== computer.getName()) {
+      makePlay(position);
+    } else {
+      makePlay();
+      events.emit("playerPlay", {
+        board: gameBoard.getBoardValues(),
+        firstPlayerName: player.getName(),
+        secondPlayerName: computer.getName(),
+      });
+    }
+  });
 
   return {
     makePlay,
