@@ -40,10 +40,15 @@ function createPlayer(name) {
     score++;
   }
 
+  function resetScore() {
+    score = 0;
+  }
+
   return {
     getName,
     getScore,
     addScore,
+    resetScore,
   };
 }
 
@@ -233,7 +238,7 @@ const gameBoardDisplay = (function () {
 })();
 
 const game = (function () {
-  const player = createPlayer("player");
+  let player = createPlayer("player");
   let secondPlayer = null;
   let currentPlayer = player;
   let winner = null;
@@ -244,6 +249,13 @@ const game = (function () {
       secondPlayer = computer;
     } else {
       secondPlayer = createPlayer("secondPlayer");
+    }
+  }
+
+  function resetScores() {
+    player.resetScore();
+    if (!!secondPlayer) {
+      secondPlayer.resetScore();
     }
   }
 
@@ -331,7 +343,7 @@ const game = (function () {
 
     if (winner) {
       updateScores();
-      finish();
+      finishGame();
       events.emit("gameStart", {
         scores: [player.getName(), secondPlayer.getName()],
         currentPlayer: currentPlayer.getName(),
@@ -341,7 +353,7 @@ const game = (function () {
 
     if (!winner && gameBoard.isFull()) {
       ties++;
-      finish();
+      finishGame();
       events.emit("gameStart", {
         scores: [player.getName(), secondPlayer.getName()],
         currentPlayer: currentPlayer.getName(),
@@ -381,9 +393,14 @@ const game = (function () {
     });
   });
 
-  function finish() {
+  function finishGame() {
     reset();
     events.emit("gameFinish");
+  }
+
+  function finish() {
+    finishGame();
+    resetScores();
   }
 
   return {
