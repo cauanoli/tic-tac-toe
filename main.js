@@ -189,6 +189,8 @@ function createCellDisplay(cell) {
   };
 }
 
+// TODO fix double click when turn ends
+// TODO fix not being able to click on cell when game restarts
 const gameBoardDisplay = (function () {
   const gameBoardContainer = document.querySelector(".game-board");
 
