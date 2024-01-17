@@ -1,5 +1,7 @@
 :root {
   --game-board-line-size: 4px;
+  --spacing-small: 0.5rem;
+  --spacing-medium: 1rem;
 }
 
 body.dark {

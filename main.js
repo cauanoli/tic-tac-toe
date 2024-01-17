@@ -223,6 +223,8 @@ const gameBoardDisplay = (function () {
       child.removeEventListener("click", onPlayerClick);
       child.innerText = "";
     });
+
+    gameBoardContainer.textContent = "";
   }
 
   events.on("gameStart", render);
@@ -289,7 +291,7 @@ const game = (function () {
         return;
       }
 
-      if (board[0] != null && board[2] === board[4] && board[4] === board[6]) {
+      if (board[2] != null && board[2] === board[4] && board[4] === board[6]) {
         winner = board[2];
         return;
       }
@@ -329,14 +331,22 @@ const game = (function () {
 
     if (winner) {
       updateScores();
-      reset();
-      events.emit("gameFinish");
+      finish();
+      events.emit("gameStart", {
+        scores: [player.getName(), secondPlayer.getName()],
+        currentPlayer: currentPlayer.getName(),
+        board: gameBoard.getBoard(),
+      });
     }
 
     if (!winner && gameBoard.isFull()) {
       ties++;
-      reset();
-      events.emit("gameFinish");
+      finish();
+      events.emit("gameStart", {
+        scores: [player.getName(), secondPlayer.getName()],
+        currentPlayer: currentPlayer.getName(),
+        board: gameBoard.getBoard(),
+      });
     }
 
     passTurn();
@@ -371,12 +381,19 @@ const game = (function () {
     });
   });
 
+  function finish() {
+    reset();
+    events.emit("gameFinish");
+  }
+
   return {
     makePlay,
     start,
+    finish,
   };
 })();
 
+// start screen modal
 (function () {
   const startGameModal = document.querySelector("dialog.start-screen-dialog");
   const selectPlayerInputs = startGameModal.querySelectorAll(
@@ -388,6 +405,13 @@ const game = (function () {
   startGameModal.showModal();
 
   const startGameButton = startGameModal.querySelector(".start-screen__button");
+
+  const backButton = document.querySelector(".back-button");
+
+  backButton.addEventListener("click", () => {
+    startGameModal.showModal();
+    game.finish();
+  });
 
   function setTheme(theme) {
     document.body.classList = theme;
