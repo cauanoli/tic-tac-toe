@@ -223,16 +223,20 @@ const gameBoardDisplay = (function () {
     });
   }
 
-  function clearBoard() {
+  function resetBoardState() {
     gameBoardContainer.childNodes.forEach((child) => {
       child.removeEventListener("click", onPlayerClick);
       child.innerText = "";
     });
+  }
 
+  function clearBoard() {
+    resetBoardState();
     gameBoardContainer.textContent = "";
   }
 
   events.on("gameStart", render);
+  events.on("roundFinish", resetBoardState);
   events.on("gameFinish", clearBoard);
   events.on("playerPlay", updateBoard);
 })();
@@ -343,8 +347,8 @@ const game = (function () {
 
     if (winner) {
       updateScores();
-      finishGame();
-      events.emit("gameStart", {
+      finishRound();
+      events.emit("roundStart", {
         scores: [player.getName(), secondPlayer.getName()],
         currentPlayer: currentPlayer.getName(),
         board: gameBoard.getBoard(),
@@ -353,8 +357,8 @@ const game = (function () {
 
     if (!winner && gameBoard.isFull()) {
       ties++;
-      finishGame();
-      events.emit("gameStart", {
+      finishRound();
+      events.emit("roundStart", {
         scores: [player.getName(), secondPlayer.getName()],
         currentPlayer: currentPlayer.getName(),
         board: gameBoard.getBoard(),
@@ -393,14 +397,15 @@ const game = (function () {
     });
   });
 
-  function finishGame() {
+  function finishRound() {
     reset();
-    events.emit("gameFinish");
+    events.emit("roundFinish");
   }
 
   function finish() {
-    finishGame();
+    finishRound();
     resetScores();
+    events.emit("gameFinish");
   }
 
   return {
