@@ -171,6 +171,7 @@ dialog::-ms-backdrop {
   background-color: var(--text-color);
   grid-template-columns: repeat(3, minmax(80px, 128px));
   gap: var(--game-board-line-size);
+  margin: 1em;
 }
 
 .game-board__cell {
