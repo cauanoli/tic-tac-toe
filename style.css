@@ -183,6 +183,19 @@ dialog::-ms-backdrop {
   aspect-ratio: 1/1;
 }
 
+.game-board__cell * {
+  animation: enter-screen 100ms;
+}
+
+@keyframes enter-screen {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 .game-board__cell span {
   font-size: 4rem;
 }
@@ -225,5 +238,9 @@ dialog::-ms-backdrop {
 
   .scores-display {
     position: initial;
+  }
+
+  .start-screen {
+    padding: 3rem;
   }
 }
