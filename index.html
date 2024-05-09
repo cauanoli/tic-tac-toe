@@ -1,13 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>tic-tac-toe</title>
-    <script src="./main.js" defer></script>
-  </head>
-  <body></body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>tic-tac-toe</title>
+        <script src="./main.js" defer></script>
+    </head>
+    <body>
+        <main>
+            <div class="board" id="board">
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+                <div class="row">
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="controls">
+            <button class="button button--player-computer"></button>
+            <button class="button"></button>
+        </aside>
+
+        <footer class="placar"></footer>
+    </body>
 </html>

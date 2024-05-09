@@ -75,6 +75,7 @@ const board = (function () {
         // Verify if all row has all cells
         const isRowFull = (row) =>
             row.length >= boardSize && row.every((cell) => cell !== undefined);
+
         full = board.every((row) => isRowFull(row));
 
         return full;
@@ -111,7 +112,6 @@ const gameController = (function () {
         const rows = board.getRows();
         const columns = board.getColumns();
         const diagonals = board.getDiagonals();
-        console.log({ rows, columns, diagonals });
 
         const rowWin = rows.find((row) => isFull(row) && isAllEqual(row));
 
@@ -125,7 +125,6 @@ const gameController = (function () {
         const winningConditions = [rowWin, columnWin, diagonalWin];
 
         return winningConditions.find((condition) => {
-            console.log(condition);
             return !!condition;
         });
     }
@@ -177,4 +176,49 @@ const game = (function () {
         playTurn,
         finishGame,
     };
+})();
+
+const displayController = (function () {
+    const symbolMap = {
+        0: "x",
+        1: "o",
+    };
+
+    function renderGameBoard(board) {
+        const gameBoard = document.querySelector("#board");
+
+        function renderRow(row) {
+            const rowElement = document.createElement("div");
+            rowElement.classList.add("row");
+            row.forEach((cell) => {
+                const cellElement = renderCell(cell);
+                rowElement.appendChild(cellElement);
+            });
+
+            return rowElement;
+        }
+
+        function renderCell(cellSymbol) {
+            const symbol = symbolMap[cellSymbol];
+            const cellElement = document.createElement("div");
+            cellElement.classList.add("cell");
+            cellElement.textContent = symbol;
+
+            return cellElement;
+        }
+
+        console.log(gameBoard);
+        board.forEach((row) => {
+            const rowElement = renderRow(row);
+            gameBoard.appendChild(rowElement);
+        });
+    }
+
+    return {
+        renderGameBoard,
+    };
+})();
+
+(function () {
+    displayController.renderGameBoard(board.getBoard());
 })();
