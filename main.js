@@ -29,7 +29,11 @@ const board = (function () {
     const boardSize = 3; // size x size board
 
     let full = false;
-    let board = [[], [], []];
+    let board = [
+        [0, 0, 0],
+        [1, 1, 1],
+        [1, 1, 1],
+    ];
 
     function placeValue(line, column, symbol) {
         board[line][column] = symbol;
@@ -183,10 +187,9 @@ const displayController = (function () {
         0: "x",
         1: "o",
     };
+    const gameBoard = document.querySelector("#board");
 
     function renderGameBoard(board) {
-        const gameBoard = document.querySelector("#board");
-
         function renderRow(row) {
             const rowElement = document.createElement("div");
             rowElement.classList.add("row");
@@ -207,15 +210,31 @@ const displayController = (function () {
             return cellElement;
         }
 
-        console.log(gameBoard);
         board.forEach((row) => {
             const rowElement = renderRow(row);
             gameBoard.appendChild(rowElement);
         });
     }
 
+    function clearGameBoard() {
+        const gameBoard = document.querySelector("#board");
+        gameBoard.childNodes.forEach((row) => {
+            row.childNodes.forEach((cell) => {
+                row.removeChild(cell);
+            });
+
+            gameBoard.removeChild(row);
+        });
+    }
+
+    function resetGameBoard() {
+        clearGameBoard();
+        renderGameBoard(board.getBoard());
+    }
+
     return {
         renderGameBoard,
+        resetGameBoard,
     };
 })();
 
