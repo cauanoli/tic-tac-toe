@@ -193,10 +193,10 @@ const game = (function () {
         }
     }
 
-    function finishGame() {
-        resetTurn();
+    function restartGame() {
         playerOne.clear();
         playerTwo.clear();
+        resetTurn();
     }
 
     function getPlayers() {
@@ -205,7 +205,7 @@ const game = (function () {
 
     return {
         playTurn,
-        finishGame,
+        restartGame,
         getActivePlayer,
         getPlayers,
     };
@@ -317,9 +317,17 @@ const displayController = (function () {
         renderGameBoard(board.getBoard());
     }
 
+    function addEventsToButtons() {
+        const restartButton = document.querySelector(".restart-button");
+        restartButton.addEventListener("click", () => {
+            game.restartGame();
+        });
+    }
+
     return {
         renderGameBoard,
         renderScoreboard,
+        addEventsToButtons,
         resetGameBoard,
         updateScoreBoard,
     };
@@ -328,4 +336,5 @@ const displayController = (function () {
 (function () {
     displayController.renderGameBoard(board.getBoard());
     displayController.renderScoreboard(...game.getPlayers());
+    displayController.addEventsToButtons();
 })();
