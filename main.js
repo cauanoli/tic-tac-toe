@@ -277,9 +277,14 @@ const displayController = (function () {
         function renderCell(cellSymbol, { rowNumber, columnNumber }) {
             const symbol = symbolMap[cellSymbol];
             const cellElement = document.createElement("div");
+            const cellContent = document.createElement("span");
 
             cellElement.classList.add("cell");
             cellElement.textContent = symbol;
+
+            cellElement.appendChild(cellContent);
+
+            cellContent.classList.add("cell__content");
 
             if (!symbol) {
                 cellElement.addEventListener("click", (event) => {
@@ -287,7 +292,7 @@ const displayController = (function () {
                         placeSymbolOnCell({
                             rowNumber,
                             columnNumber,
-                            cellElement: event.target,
+                            cellElement: cellContent,
                         });
                     }
                 });
@@ -317,6 +322,7 @@ const displayController = (function () {
         renderGameBoard(board.getBoard());
     }
 
+    // TODO: create mode to play against computer
     function addEventsToButtons() {
         const restartButton = document.querySelector(".restart-button");
         restartButton.addEventListener("click", () => {
