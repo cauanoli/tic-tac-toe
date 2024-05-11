@@ -282,13 +282,15 @@ const displayController = (function () {
             cellElement.textContent = symbol;
 
             if (!symbol) {
-                cellElement.addEventListener("click", (event) =>
-                    placeSymbolOnCell({
-                        rowNumber,
-                        columnNumber,
-                        cellElement: event.target,
-                    })
-                );
+                cellElement.addEventListener("click", (event) => {
+                    if (!board.isCellFull(rowNumber, columnNumber)) {
+                        placeSymbolOnCell({
+                            rowNumber,
+                            columnNumber,
+                            cellElement: event.target,
+                        });
+                    }
+                });
             }
 
             return cellElement;
